@@ -1,0 +1,27 @@
+﻿@model Inventory.Models.SubGroup
+
+@{
+    ViewData["Title"] = "ویرایش زیرگروه";
+}
+
+<div class="container mt-4">
+    <h2>ویرایش زیرگروه</h2>
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="SubGroupId" />
+        <div class="mb-3">
+            <label class="form-label">نام زیرگروه</label>
+            <input asp-for="SubGroupName" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">انتخاب گروه</label>
+            <select asp-for="GroupId" class="form-control">
+                @foreach (var group in ViewBag.Groups)
+                {
+                    <option value="@group.GroupId">@group.GroupName</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">ذخیره تغییرات</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+    </form>
+</div>

@@ -1,0 +1,26 @@
+﻿@model Inventory.Models.Product
+
+@{
+    ViewData["Title"] = "ایجاد محصول";
+}
+
+<div class="container mt-4">
+    <h2>ایجاد محصول جدید</h2>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">نام محصول</label>
+            <input asp-for="ProductName" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">گروه</label>
+            <select asp-for="SubGroupId" class="form-control">
+                @foreach (var group in ViewBag.SubGroups)
+                {
+                    <option value="@group.SubGroupId">@group.SubGroupName</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">ثبت</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+    </form>
+</div>

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Inventory.Models.Warehouse>
+
+@{
+    ViewData["Title"] = "لیست انبارها";
+}
+
+<div class="container mt-4">
+    <h2>لیست انبارها</h2>
+
+    <a href="@Url.Action("Create")" class="btn btn-success mb-3">ایجاد انبار جدید</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>نام انبار</th>
+                <th>مکان</th>
+                <th>نام Tenant</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var warehouse in Model)
+            {
+                <tr>
+                    <td>@warehouse.Name</td>
+                    <td>@warehouse.Location</td>
+                    <td>
+                        @if (warehouse.Tenant != null)
+                        {
+                            @warehouse.Tenant.Name
+                        }
+                        else
+                        {
+                            <span>بدون Tenant</span>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = warehouse.WarehouseId })" class="btn btn-warning btn-sm">ویرایش</a>
+                        <a href="@Url.Action("Delete", new { id = warehouse.WarehouseId })" class="btn btn-danger btn-sm" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

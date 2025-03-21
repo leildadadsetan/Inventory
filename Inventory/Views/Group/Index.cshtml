@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Inventory.Models.Group>
+
+@{
+    ViewData["Title"] = "گروه‌ها";
+}
+
+<div class="container mt-4">
+    <h2>گروه‌ها</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">ایجاد گروه جدید</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>نام گروه</th>
+                <th>کد گروه</th>
+                <th>نام Tenant</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Model)
+            {
+                <tr>
+                    <td>@group.GroupName</td>
+                    <td>@group.GroupCode</td>
+                    <td>@group.Tenant.Name</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = group.GroupId })" class="btn btn-warning btn-sm">ویرایش</a>
+                        <a href="@Url.Action("Delete", new { id = group.GroupId })" class="btn btn-danger btn-sm">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

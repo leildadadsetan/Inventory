@@ -1,0 +1,29 @@
+﻿@model Inventory.Models.Group
+
+@{
+    ViewData["Title"] = "حذف گروه";
+}
+
+<div class="container mt-4">
+    <h2>آیا از حذف گروه اطمینان دارید؟</h2>
+    <div class="alert alert-warning">
+        <strong>هشدار!</strong> حذف این گروه غیر قابل بازگشت است.
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">نام گروه</dt>
+        <dd class="col-sm-9">@Model.GroupName</dd>
+
+        <dt class="col-sm-3">کد گروه</dt>
+        <dd class="col-sm-9">@Model.GroupCode</dd>
+
+        <dt class="col-sm-3">نام Tenant</dt>
+        <dd class="col-sm-9">@Model.Tenant.Name</dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="GroupId" />
+        <button type="submit" class="btn btn-danger">حذف</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+    </form>
+</div>

@@ -1,0 +1,30 @@
+﻿@model Inventory.Models.Group
+
+@{
+    ViewData["Title"] = "ایجاد گروه";
+}
+
+<div class="container mt-4">
+    <h2>ایجاد گروه جدید</h2>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">نام گروه</label>
+            <input asp-for="GroupName" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">کد گروه</label>
+            <input asp-for="GroupCode" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">انتخاب Tenant</label>
+            <select asp-for="TenantId" class="form-control" asp-items="@(new SelectList(ViewData["Tenants"] as IEnumerable<Inventory.Models.Tenant>, "Id", "Name"))" required>
+                <option value="">انتخاب کنید</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">ثبت</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+    </form>
+</div>

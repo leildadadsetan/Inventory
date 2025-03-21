@@ -1,0 +1,16 @@
+﻿@model Inventory.Models.Product
+
+@{
+    ViewData["Title"] = "حذف محصول";
+}
+
+<div class="container mt-4">
+    <h2 class="text-danger">آیا مطمئن هستید؟</h2>
+    <p>آیا می‌خواهید محصول "<strong>@Model.ProductName</strong>" را حذف کنید؟</p>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="ProductId" />
+        <button type="submit" class="btn btn-danger">بله، حذف شود</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+    </form>
+</div>

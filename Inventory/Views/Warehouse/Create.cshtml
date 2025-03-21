@@ -1,0 +1,31 @@
+﻿@model Inventory.Models.Warehouse
+
+@{
+    ViewData["Title"] = "ایجاد انبار";
+}
+
+<div class="container mt-4">
+    <h2>ایجاد انبار جدید</h2>
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">نام انبار</label>
+            <input asp-for="Name" class="form-control" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">مکان انبار</label>
+            <input asp-for="Location" class="form-control" required />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">ثبت</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

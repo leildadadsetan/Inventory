@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Inventory.Models.SubGroup>
+
+@{
+    ViewData["Title"] = "لیست زیرگروه‌ها";
+}
+
+<div class="container mt-4">
+    <h2>لیست زیرگروه‌ها</h2>
+    <a href="@Url.Action("Create")" class="btn btn-success mb-3">ایجاد زیرگروه جدید</a>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>نام زیرگروه</th>
+                <th>گروه مرتبط</th>
+                <th>عملیات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subgroup in Model)
+            {
+                <tr>
+                    <td>@subgroup.SubGroupName</td>
+                    <td>@subgroup.Group.GroupName</td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = subgroup.SubGroupId })" class="btn btn-warning btn-sm">ویرایش</a>
+                        <a href="@Url.Action("Delete", new { id = subgroup.SubGroupId })" class="btn btn-danger btn-sm">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
