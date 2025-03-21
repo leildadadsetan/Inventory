@@ -135,3 +135,4 @@ D:\Inventory\Inventory\Inventory\obj\Debug\net8.0\Inventory.pdb
 D:\Inventory\Inventory\Inventory\obj\Debug\net8.0\Inventory.genruntimeconfig.cache
 D:\Inventory\Inventory\Inventory\obj\Debug\net8.0\ref\Inventory.dll
 D:\Inventory\Inventory\Inventory\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+D:\Inventory\Inventory\Inventory\obj\Debug\net8.0\Inventory.sourcelink.json
