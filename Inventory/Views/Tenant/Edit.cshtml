@@ -1,0 +1,23 @@
+﻿@model Inventory.Models.Tenant
+
+@{
+    ViewData["Title"] = "ویرایش کاربر";
+}
+
+<h2>ویرایش کاربر</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="TenantId" />
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="WarehouseId" class="control-label"></label>
+        <input asp-for="WarehouseId" class="form-control" />
+        <span asp-validation-for="WarehouseId" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">به‌روزرسانی</button>
+    <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
+</form>

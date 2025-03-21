@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Inventory.Models.Tenant>
+
+@{
+    ViewData["Title"] = "Tenants";
+}
+
+<h2>Tenants</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">ایجاد کاربر جدید</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tenant ID</th>
+            <th>Name</th>
+            <th>Warehouse</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tenant in Model)
+        {
+            <tr>
+                <td>@tenant.TenantId</td>
+                <td>@tenant.Name</td>
+                <td>@tenant.Warehouse?.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@tenant.TenantId" class="btn btn-warning">ویرایش</a>
+                    <a asp-action="Delete" asp-route-id="@tenant.TenantId" class="btn btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
