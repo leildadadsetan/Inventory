@@ -1,29 +1,39 @@
-﻿@model IEnumerable<Inventory.Models.SubGroup>
+﻿@model IEnumerable<Inventory.Dtos.SubGroupDto>
 
 @{
     ViewData["Title"] = "لیست زیرگروه‌ها";
 }
 
 <div class="container mt-4">
-    <h2>لیست زیرگروه‌ها</h2>
-    <a href="@Url.Action("Create")" class="btn btn-success mb-3">ایجاد زیرگروه جدید</a>
-    <table class="table table-striped">
+    <h2>زیرگروه‌ها</h2>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">ایجاد زیرگروه جدید</a>
+    </p>
+    <table class="table table-bordered">
         <thead>
             <tr>
+                <th>شناسه زیرگروه</th>
                 <th>نام زیرگروه</th>
-                <th>گروه مرتبط</th>
+                <th>شناسه گروه</th>
+                <th>نام گروه</th> <!-- ستون نام گروه -->
+                <th>شناسه Tenant</th>
+                <th>نام Tenant</th> <!-- ستون نام Tenant -->
                 <th>عملیات</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var subgroup in Model)
+            @foreach (var subGroup in Model)
             {
                 <tr>
-                    <td>@subgroup.SubGroupName</td>
-                    <td>@subgroup.Group.GroupName</td>
+                    <td>@subGroup.SubGroupId</td>
+                    <td>@subGroup.SubGroupName</td>
+                    <td>@subGroup.GroupId</td>
+                    <td>@subGroup.GroupName</td> <!-- نمایش نام گروه -->
+                    <td>@subGroup.TenantId</td>
+                    <td>@subGroup.TenantName</td> <!-- نمایش نام Tenant -->
                     <td>
-                        <a href="@Url.Action("Edit", new { id = subgroup.SubGroupId })" class="btn btn-warning btn-sm">ویرایش</a>
-                        <a href="@Url.Action("Delete", new { id = subgroup.SubGroupId })" class="btn btn-danger btn-sm">حذف</a>
+                        <a asp-action="Edit" asp-route-id="@subGroup.SubGroupId" class="btn btn-warning">ویرایش</a>
+                        <a asp-action="Delete" asp-route-id="@subGroup.SubGroupId" class="btn btn-danger">حذف</a>
                     </td>
                 </tr>
             }

@@ -1,14 +1,14 @@
 ﻿@model Inventory.Models.Tenant
 
 @{
-    ViewData["Title"] = "حذف کاربر";
+    ViewData["Title"] = "حذف آزمایشگاه";
 }
 
-<h2>حذف کاربر</h2>
+<h2>حذف آزمایشگاه</h2>
 
-<h4>آیا مطمئن هستید که می‌خواهید کاربر <strong>@Model.Name</strong> را حذف کنید؟</h4>
+<h4>آیا مطمئن هستید که می‌خواهید آزمایشگاه <strong>@Model.Name</strong> را حذف کنید؟</h4>
 
-<form asp-action="DeleteConfirmed" method="post">
+<form asp-action="Delete" method="post">
     <input type="hidden" asp-for="TenantId" />
     <button type="submit" class="btn btn-danger">حذف</button>
     <a asp-action="Index" class="btn btn-secondary">بازگشت</a>

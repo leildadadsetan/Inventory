@@ -1,4 +1,4 @@
-﻿@model Inventory.Models.Group
+﻿@model Inventory.Dtos.GroupDeleteDto
 
 @{
     ViewData["Title"] = "حذف گروه";
@@ -18,10 +18,10 @@
         <dd class="col-sm-9">@Model.GroupCode</dd>
 
         <dt class="col-sm-3">نام Tenant</dt>
-        <dd class="col-sm-9">@Model.Tenant.Name</dd>
+        <dd class="col-sm-9">@Model.TenantName</dd>
     </dl>
 
-    <form asp-action="DeleteConfirmed" method="post">
+    <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="GroupId" />
         <button type="submit" class="btn btn-danger">حذف</button>
         <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>

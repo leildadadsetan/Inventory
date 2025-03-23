@@ -1,30 +1,37 @@
 ﻿@model Inventory.Models.Group
 
-@{
-    ViewData["Title"] = "ایجاد گروه";
-}
+<h1>ایجاد گروه</h1>
 
-<div class="container mt-4">
-    <h2>ایجاد گروه جدید</h2>
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label class="form-label">نام گروه</label>
-            <input asp-for="GroupName" class="form-control" required />
-        </div>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="GroupName" class="control-label"></label>
+        <input asp-for="GroupName" class="form-control" required />
+        <span asp-validation-for="GroupName" class="text-danger"></span> <!-- نمایش خطا -->
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label">کد گروه</label>
-            <input asp-for="GroupCode" class="form-control" required />
-        </div>
+    <div class="form-group">
+        <label asp-for="GroupCode" class="control-label"></label>
+        <input asp-for="GroupCode" class="form-control" required />
+        <span asp-validation-for="GroupCode" class="text-danger"></span> <!-- نمایش خطا -->
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label">انتخاب Tenant</label>
-            <select asp-for="TenantId" class="form-control" asp-items="@(new SelectList(ViewData["Tenants"] as IEnumerable<Inventory.Models.Tenant>, "Id", "Name"))" required>
-                <option value="">انتخاب کنید</option>
-            </select>
-        </div>
+    <div class="form-group">
+        <label asp-for="TenantId" class="control-label"></label>
+        <select asp-for="TenantId" class="form-control" asp-items="@(new SelectList(ViewData["Tenants"] as IEnumerable<Inventory.Dtos.TenantDto>, "TenantId", "Name"))" required>
+            <option value="">انتخاب کنید</option>
+        </select>
+        <span asp-validation-for="TenantId" class="text-danger"></span> <!-- نمایش خطا -->
+    </div>
 
-        <button type="submit" class="btn btn-primary">ثبت</button>
-        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
-    </form>
+    <button type="submit" class="btn btn-primary">ایجاد</button>
+</form>
+
+<div>
+    <a asp-action="Index">بازگشت</a>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

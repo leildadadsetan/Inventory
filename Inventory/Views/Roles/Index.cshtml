@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Inventory.Models.ApplicationRole> // جایگزین کنید با فضای نام واقعی شما
+
+@{
+    ViewData["Title"] = "مدیریت نقش‌ها";
+}
+
+<h2>مدیریت نقش‌ها</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>نام نقش</th>
+            <th>عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-warning">ویرایش</a>
+                    <a asp-action="Delete" asp-route-id="@role.Id" class="btn btn-danger">حذف</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">ایجاد نقش جدید</a>

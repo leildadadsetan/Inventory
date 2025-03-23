@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Inventory.Dtos.CompanyDto>
+
+@{
+    ViewData["Title"] = "لیست شرکت ها";
+}
+
+<h1>لیست شرکت‌ها</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">ایجاد شرکت</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Company ID</th>
+            <th>Name</th>
+            <th>Company Code</th>
+            <th>Company Type</th> 
+            <th>Email</th> 
+            <th>Phone Number</th> 
+            <th>Tax Code</th> 
+            <th>Address</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var company in Model)
+        {
+            <tr>
+                <td>@company.CompanyId</td>
+                <td>@company.Name</td>
+                <td>@company.CompanyCode</td>
+                <td>@company.CompanyTypeName</td> <!-- نمایش نام نوع کمپانی -->
+                <td>@company.Email</td> <!-- نمایش ایمیل -->
+                <td>@company.PhoneNumber</td> <!-- نمایش شماره تماس -->
+                <td>@company.TaxCode</td> <!-- نمایش کد مالیاتی -->
+                <td>@company.Address</td> <!-- نمایش آدرس -->
+                <td>
+                    <a asp-action="Edit" asp-route-id="@company.CompanyId" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@company.CompanyId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

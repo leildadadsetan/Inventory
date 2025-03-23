@@ -4,6 +4,7 @@
     {
         public int SubGroupId { get; set; }
         public string SubGroupName { get; set; }
+        public string SubGroupCode { get; set; }
         public int GroupId { get; set; }
         public int? TenantId { get; set; }
 

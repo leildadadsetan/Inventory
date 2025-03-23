@@ -1,26 +1,51 @@
-﻿@model Inventory.Models.SubGroup
+﻿@model Inventory.Dtos.SubGroupCreateDto
 
 @{
     ViewData["Title"] = "ایجاد زیرگروه";
 }
 
 <div class="container mt-4">
-    <h2>ایجاد زیرگروه جدید</h2>
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label class="form-label">نام زیرگروه</label>
-            <input asp-for="SubGroupName" class="form-control" required />
+    <h2>ایجاد زیرگروه</h2>
+
+    <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="SubGroupName" class="control-label"></label>
+            <input asp-for="SubGroupName" class="form-control" />
+            <span asp-validation-for="SubGroupName" class="text-danger"></span>
         </div>
-        <div class="mb-3">
-            <label class="form-label">انتخاب گروه</label>
-            <select asp-for="GroupId" class="form-control">
-                @foreach (var group in ViewBag.Groups)
-                {
-                    <option value="@group.GroupId">@group.GroupName</option>
-                }
-            </select>
+
+        <div class="form-group">
+            <label asp-for="SubGroupCode" class="control-label"></label>
+            <input asp-for="SubGroupCode" class="form-control" />
+            <span asp-validation-for="SubGroupCode" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary">ثبت</button>
-        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
+
+        <div class="form-group">
+            <label asp-for="GroupId" class="control-label"></label>
+            <select asp-for="GroupId" class="form-control" asp-items="ViewBag.Groups" id="groupSelect"></select>
+            <span asp-validation-for="GroupId" class="text-danger"></span>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">ایجاد</button>
+        <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
     </form>
 </div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#groupSelect').change(function () {
+                var groupId = $(this).val();
+                if (groupId) {
+                    $.getJSON('@Url.Action("GetTenantId", "SubGroup")', { groupId: groupId }, function (data) {
+                        $('#tenantIdInput').val(data.tenantId);
+                    });
+                } else {
+                    $('#tenantIdInput').val('');
+                }
+            });
+        });
+    </script>
+}

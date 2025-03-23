@@ -17,6 +17,7 @@ namespace Inventory
         public DbSet<SubGroup> SubGroups { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Group> Groups { get; set; }
+        public DbSet<CompanyType> CompanyTypes { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyProduct> CompanyProducts { get; set; }
         public DbSet<ApplicationUserClaim> ApplicationUserClaims { get; set; }

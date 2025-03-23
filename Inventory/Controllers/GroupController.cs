@@ -1,146 +1,236 @@
-﻿using Inventory.Models;
+﻿using Inventory.Dtos;
+using Inventory.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
- 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace Inventory.Controllers
 {
-        public class GroupController : Controller
+    public class GroupController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public GroupController(ApplicationDbContext context)
         {
-            private readonly ApplicationDbContext _context;
+            _context = context;
+        }
 
-            public GroupController(ApplicationDbContext context)
+        // GET: Group
+        public async Task<IActionResult> Index()
+        {
+            var groups = await _context.Groups.Include(g => g.Tenant).ToListAsync();
+            return View(groups);
+        }
+
+        // GET: Group/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
             {
-                _context = context;
+                return NotFound();
             }
 
-            // GET: Group
-            public async Task<IActionResult> Index()
+            var group = await _context.Groups.Include(g => g.Tenant).FirstOrDefaultAsync(m => m.GroupId == id);
+            if (group == null)
             {
-                return View(await _context.Groups.ToListAsync());
+                return NotFound();
             }
 
-            // GET: Group/Details/5
-            public async Task<IActionResult> Details(int? id)
-            {
-                if (id == null)
+            return View(group);
+        }
+
+        // GET: Group/Create
+        public async Task<IActionResult> Create()
+        {
+            var tenants = await _context.Tenants
+                .Select(t => new TenantDto
                 {
-                    return NotFound();
+                    TenantId = t.TenantId,
+                    Name = t.Name
+                })
+                .ToListAsync();
+
+            ViewData["Tenants"] = tenants;
+            return View();
+        }
+
+        // POST: Group/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("GroupName,GroupCode,TenantId")] GroupCreateDto groupDto)
+        {
+            // اعتبارسنجی کد گروه
+            if (!IsGroupCodeValid(groupDto.GroupCode))
+            {
+                ModelState.AddModelError("GroupCode", "کد گروه باید حتماً دو رقم باشد.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // بررسی وجود کد گروه تکراری
+                if (await IsGroupCodeDuplicate(groupDto.GroupCode))
+                {
+                    ModelState.AddModelError("GroupCode", "این کد گروه قبلاً ثبت شده است.");
                 }
-
-                var group = await _context.Groups
-                    .FirstOrDefaultAsync(m => m.GroupId == id);
-                if (group == null)
+      
+                if (ModelState.IsValid) // دوباره بررسی اعتبارسنجی
                 {
-                    return NotFound();
-                }
+                    var group = new Group
+                    {
+                        GroupName = groupDto.GroupName,
+                        GroupCode = groupDto.GroupCode,
+                        TenantId = groupDto.TenantId
+                    };
 
-                return View(group);
-            }
-
-            // GET: Group/Create
-            public IActionResult Create()
-            {
-                return View();
-            }
-
-            // POST: Group/Create
-            // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-            // more details, see https://aka.ms/RazorPagesCRUD.
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Create([Bind("Name,Description")] Group group)
-            {
-                if (ModelState.IsValid)
-                {
                     _context.Add(group);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                return View(group);
             }
 
-            // GET: Group/Edit/5
-            public async Task<IActionResult> Edit(int? id)
-            {
-                if (id == null)
-                {
-                    return NotFound();
-                }
+            ViewData["Tenants"] = await _context.Tenants.ToListAsync();
+            return View(groupDto);
+        }
 
-                var group = await _context.Groups.FindAsync(id);
-                if (group == null)
-                {
-                    return NotFound();
-                }
-                return View(group);
+        // GET: Group/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
-            // POST: Group/Edit/5
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Group group)
+            var group = await _context.Groups.FindAsync(id);
+            if (group == null)
             {
-                if (id != group.GroupId)
+                return NotFound();
+            }
+
+            var tenants = await _context.Tenants
+                .Select(t => new TenantDto
                 {
-                    return NotFound();
+                    TenantId = t.TenantId,
+                    Name = t.Name
+                })
+                .ToListAsync();
+
+            ViewData["Tenants"] = tenants;
+            var groupDto = new GroupEditDto
+            {
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                GroupCode = group.GroupCode,
+                TenantId = group.TenantId
+            };
+
+            return View(groupDto);
+        }
+
+        // POST: Group/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("GroupId,GroupName,GroupCode,TenantId")] GroupEditDto groupDto)
+        {
+            if (id != groupDto.GroupId)
+            {
+                return NotFound();
+            }
+            // اعتبارسنجی کد گروه
+            if (!IsGroupCodeValid(groupDto.GroupCode))
+            {
+                ModelState.AddModelError("GroupCode", "کد گروه باید حتماً دو رقم باشد.");
+            }
+            if (ModelState.IsValid)
+            {
+                // بررسی وجود کد گروه تکراری
+                if (await IsGroupCodeDuplicate(groupDto.GroupCode, id))
+                {
+                    ModelState.AddModelError("GroupCode", "این کد گروه قبلاً ثبت شده است.");
                 }
 
-                if (ModelState.IsValid)
+                if (ModelState.IsValid) // دوباره بررسی اعتبارسنجی
                 {
                     try
                     {
-                        _context.Update(group);
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!GroupExists(group.GroupId))
+                        var group = await _context.Groups.FindAsync(id);
+                        if (group == null)
                         {
                             return NotFound();
                         }
-                        else
-                        {
-                            throw;
-                        }
+
+                        group.GroupName = groupDto.GroupName;
+                        group.GroupCode = groupDto.GroupCode;
+                        group.TenantId = groupDto.TenantId;
+
+                        _context.Update(group);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
                     }
-                    return RedirectToAction(nameof(Index));
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!GroupExists(groupDto.GroupId))
+                        {
+                            return NotFound();
+                        }
+                        throw;
+                    }
                 }
-                return View(group);
             }
 
-            // GET: Group/Delete/5
-            public async Task<IActionResult> Delete(int? id)
+            // بارگذاری مجدد Tenant ها برای ویو در صورت بروز خطا
+            ViewData["Tenants"] = await _context.Tenants.ToListAsync();
+            return View(groupDto); // بازگشت به ویو با اطلاعات ورودی
+        }
+
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var group = await _context.Groups
+                .Include(g => g.Tenant) // اگر نیاز به بارگذاری اطلاعات Tenant باشد
+                .FirstOrDefaultAsync(m => m.GroupId == id);
+
+            if (group == null) return NotFound();
+
+            var groupDto = new GroupDeleteDto
             {
-                if (id == null)
-                {
-                    return NotFound();
-                }
+                GroupId = group.GroupId,
+                GroupName = group.GroupName,
+                GroupCode = group.GroupCode,
+                TenantName = group.Tenant?.Name // با استفاده از ? برای جلوگیری از NullReferenceException
+            };
 
-                var group = await _context.Groups
-                    .FirstOrDefaultAsync(m => m.GroupId == id);
-                if (group == null)
-                {
-                    return NotFound();
-                }
-
-                return View(group);
-            }
-
-            // POST: Group/Delete/5
-            [HttpPost, ActionName("Delete")]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> DeleteConfirmed(int id)
+            return View(groupDto);
+        }
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var group = await _context.Groups.FindAsync(id);
+            if (group != null)
             {
-                var group = await _context.Groups.FindAsync(id);
                 _context.Groups.Remove(group);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
+            return RedirectToAction(nameof(Index));
+        }
 
-            private bool GroupExists(int id)
-            {
-                return _context.Groups.Any(e => e.GroupId == id);
-            }
+        private bool GroupExists(int id)
+        {
+            return _context.Groups.Any(e => e.GroupId == id);
+        }
+
+        private bool IsGroupCodeValid(string groupCode)
+        {
+            return !string.IsNullOrEmpty(groupCode) && groupCode.Length == 2 && int.TryParse(groupCode, out _);
+        }
+
+        private async Task<bool> IsGroupCodeDuplicate(string groupCode, int? currentGroupId = null)
+        {
+            return await _context.Groups.AnyAsync(g => g.GroupCode == groupCode && (!currentGroupId.HasValue || g.GroupId != currentGroupId));
         }
     }
-
+}

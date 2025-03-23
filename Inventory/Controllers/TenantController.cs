@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Inventory.Models;
+using System.Collections.Generic; // اطمینان از اضافه بودن این namespace
 using System.Linq;
 using System.Threading.Tasks;
 using Inventory;
@@ -26,8 +27,8 @@ public class TenantController : Controller
     // GET: Tenants/Create
     public async Task<IActionResult> Create()
     {
-        var warehouses = await _context.Warehouses.ToListAsync();
-        ViewBag.Warehouses = warehouses; // ذخیره لیست انبارها در ViewBag
+        var availableWarehouses = await GetAvailableWarehousesAsync();
+        ViewBag.Warehouses = availableWarehouses; // ذخیره لیست انبارها در ViewBag
         return View();
     }
 
@@ -44,8 +45,8 @@ public class TenantController : Controller
         }
 
         // اگر مدل نامعتبر است، لیست انبارها را دوباره بارگذاری کنید
-        var warehouses = await _context.Warehouses.ToListAsync();
-        ViewBag.Warehouses = warehouses;
+        var availableWarehouses = await GetAvailableWarehousesAsync();
+        ViewBag.Warehouses = availableWarehouses;
         return View(tenant);
     }
 
@@ -58,12 +59,12 @@ public class TenantController : Controller
             return NotFound();
         }
 
-        var warehouses = await _context.Warehouses.ToListAsync();
-        ViewBag.Warehouses = warehouses;
+        // بارگذاری انبارهای مجاز برای ویرایش
+        var availableWarehouses = await GetAvailableWarehousesForEditAsync(tenant.WarehouseId);
+        ViewBag.Warehouses = availableWarehouses;
         return View(tenant);
     }
 
-    // POST: Tenants/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, Tenant tenant)
@@ -77,8 +78,16 @@ public class TenantController : Controller
         {
             try
             {
-                _context.Update(tenant);
-                await _context.SaveChangesAsync();
+                // در اینجا بررسی کنید که آیا WarehouseId موجود است
+                if (tenant.WarehouseId.HasValue)
+                {
+                    _context.Update(tenant);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    ModelState.AddModelError("WarehouseId", "لطفاً یک انبار معتبر انتخاب کنید.");
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -95,13 +104,13 @@ public class TenantController : Controller
         }
 
         // اگر مدل نامعتبر است، لیست انبارها را دوباره بارگذاری کنید
-        var warehouses = await _context.Warehouses.ToListAsync();
-        ViewBag.Warehouses = warehouses;
+        var availableWarehouses = await GetAvailableWarehousesForEditAsync(tenant.WarehouseId ?? 0); // برای استفاده از مقدار پیش‌فرض
+        ViewBag.Warehouses = availableWarehouses;
         return View(tenant);
     }
 
     // GET: Tenants/Delete/5
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int? id)
     {
         var tenant = await _context.Tenants
             .Include(t => t.Warehouse)
@@ -117,7 +126,7 @@ public class TenantController : Controller
     // POST: Tenants/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var tenant = await _context.Tenants.FindAsync(id);
         _context.Tenants.Remove(tenant);
@@ -128,5 +137,22 @@ public class TenantController : Controller
     private bool TenantExists(int id)
     {
         return _context.Tenants.Any(e => e.TenantId == id);
+    }
+
+    private async Task<List<Warehouse>> GetAvailableWarehousesAsync()
+    {
+        // انبارهایی را که به هیچ Tenant ای متصل نیستند، برمی‌گرداند
+        return await _context.Warehouses
+            .Where(w => !_context.Tenants.Any(t => t.WarehouseId == w.WarehouseId))
+            .ToListAsync();
+    }
+
+    private async Task<List<Warehouse>> GetAvailableWarehousesForEditAsync(int? currentWarehouseId)
+    {
+        // انبارهایی را که به هیچ Tenant ای متصل نیستند یا انبار فعلی را برمی‌گرداند
+        return await _context.Warehouses
+            .Where(w => w.WarehouseId == currentWarehouseId ||
+                         !_context.Tenants.Any(t => t.WarehouseId == w.WarehouseId))
+            .ToListAsync();
     }
 }

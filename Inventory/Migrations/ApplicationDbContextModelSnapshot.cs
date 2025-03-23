@@ -223,19 +223,19 @@ namespace Inventory.Migrations
 
             modelBuilder.Entity("Inventory.Models.CompanyType", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CompanyTypeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyTypeId"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("CompanyTypeId");
 
-                    b.ToTable("CompanyType");
+                    b.ToTable("CompanyTypes");
                 });
 
             modelBuilder.Entity("Inventory.Models.Group", b =>
@@ -314,6 +314,10 @@ namespace Inventory.Migrations
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
+                    b.Property<string>("SubGroupCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SubGroupName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -342,7 +346,7 @@ namespace Inventory.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("WarehouseId")
+                    b.Property<int?>("WarehouseId")
                         .HasColumnType("int");
 
                     b.HasKey("TenantId");
@@ -770,8 +774,7 @@ namespace Inventory.Migrations
 
                     b.Navigation("Users");
 
-                    b.Navigation("Warehouse")
-                        .IsRequired();
+                    b.Navigation("Warehouse");
                 });
 #pragma warning restore 612, 618
         }

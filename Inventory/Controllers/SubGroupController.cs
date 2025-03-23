@@ -1,7 +1,10 @@
-﻿using Inventory.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Inventory.Models; // برای مدل‌ها
+using Inventory.Dtos;
+using Microsoft.AspNetCore.Mvc.Rendering; // برای SelectList
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace Inventory.Controllers
 {
@@ -17,145 +20,153 @@ namespace Inventory.Controllers
         // GET: SubGroup
         public async Task<IActionResult> Index()
         {
-            var subGroups = _context.SubGroups.Include(sg => sg.Tenant).Include(sg => sg.Group);
-            return View(await subGroups.ToListAsync());
-        }
+            var subGroups = await _context.SubGroups
+                .Include(s => s.Group) // بارگذاری اطلاعات گروه
+                .Include(s => s.Tenant) // بارگذاری اطلاعات Tenant
+                .ToListAsync();
 
-        // GET: SubGroup/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            var subGroupDtos = subGroups.Select(s => new SubGroupDto
             {
-                return NotFound();
-            }
+                SubGroupId = s.SubGroupId,
+                SubGroupName = s.SubGroupName,
+                SubGroupCode = s.SubGroupCode,
+                GroupId = s.GroupId,
+                GroupName = s.Group.GroupName,
+                TenantId = s.TenantId,
+                TenantName = s.Tenant.Name
+            }).ToList();
 
-            var subGroup = await _context.SubGroups
-                .Include(sg => sg.Tenant)
-                .Include(sg => sg.Group)
-                .FirstOrDefaultAsync(m => m.SubGroupId == id);
-            if (subGroup == null)
-            {
-                return NotFound();
-            }
-
-            return View(subGroup);
+            return View(subGroupDtos);
         }
 
         // GET: SubGroup/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            // پر کردن داده‌های Dropdown برای انتخاب Tenant و Group
-            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name");
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name");
+            var groups = await _context.Groups.ToListAsync(); // بارگذاری گروه‌ها
+            ViewBag.Groups = new SelectList(groups, "GroupId", "GroupName"); // ایجاد SelectList برای dropdown
             return View();
         }
 
         // POST: SubGroup/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,TenantId,GroupId")] SubGroup subGroup)
+        public async Task<IActionResult> Create(SubGroupCreateDto dto)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(subGroup);
+                var group = await _context.Groups.FindAsync(dto.GroupId);
+                int? tenantId = group?.TenantId;
+
+                var subGroup = new SubGroup
+                {
+                    SubGroupName = dto.SubGroupName,
+                    SubGroupCode = dto.SubGroupCode,
+                    GroupId = dto.GroupId,
+                    TenantId = tenantId
+                };
+
+                _context.SubGroups.Add(subGroup);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            // در صورت وجود خطا، داده‌ها را دوباره در فرم قرار می‌دهیم
-            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", subGroup.TenantId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", subGroup.GroupId);
-            return View(subGroup);
+
+            var groups = await _context.Groups.ToListAsync();
+            ViewBag.Groups = new SelectList(groups, "GroupId", "GroupName");
+            return View(dto);
         }
 
         // GET: SubGroup/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var subGroup = await _context.SubGroups.FindAsync(id);
-            if (subGroup == null)
+            if (subGroup == null) return NotFound();
+
+            var dto = new SubGroupEditDto
             {
-                return NotFound();
-            }
-            // پر کردن داده‌های Dropdown برای ویرایش Tenant و Group
-            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", subGroup.TenantId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", subGroup.GroupId);
-            return View(subGroup);
+                SubGroupId = subGroup.SubGroupId,
+                SubGroupName = subGroup.SubGroupName,
+                SubGroupCode = subGroup.SubGroupCode,
+                GroupId = subGroup.GroupId,
+                TenantId = subGroup.TenantId
+            };
+
+            // بارگذاری گروه‌ها برای دراپ‌داون
+            var groups = await _context.Groups.ToListAsync();
+            ViewBag.Groups = new SelectList(groups, "GroupId", "GroupName", dto.GroupId); // انتخاب گروه فعلی
+
+            return View(dto);
         }
 
         // POST: SubGroup/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,TenantId,GroupId")] SubGroup subGroup)
+        public async Task<IActionResult> Edit(int id, SubGroupEditDto dto)
         {
-            if (id != subGroup.SubGroupId)
-            {
-                return NotFound();
-            }
+            if (id != dto.SubGroupId) return NotFound();
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(subGroup);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SubGroupExists(subGroup.SubGroupId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var subGroup = await _context.SubGroups.FindAsync(id);
+                if (subGroup == null) return NotFound();
+
+                // فقط اجازه ویرایش نام و کد زیرگروه
+                subGroup.SubGroupName = dto.SubGroupName;
+                subGroup.SubGroupCode = dto.SubGroupCode;
+
+                // اگر نیاز به تنظیم TenantId بر اساس GroupId باشد
+                var group = await _context.Groups.FindAsync(dto.GroupId);
+                subGroup.TenantId = group?.TenantId;
+
+                _context.Update(subGroup);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            // در صورت وجود خطا، داده‌ها را دوباره در فرم قرار می‌دهیم
-            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", subGroup.TenantId);
-            ViewData["GroupId"] = new SelectList(_context.Groups, "Id", "Name", subGroup.GroupId);
-            return View(subGroup);
+
+            // بارگذاری گروه‌ها برای دراپ‌داون در صورت نامعتبر بودن مدل
+            var groups = await _context.Groups.ToListAsync();
+            ViewBag.Groups = new SelectList(groups, "GroupId", "GroupName", dto.GroupId);
+            return View(dto);
         }
 
         // GET: SubGroup/Delete/5
+        // GET: SubGroup/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var subGroup = await _context.SubGroups
-                .Include(sg => sg.Tenant)
-                .Include(sg => sg.Group)
+                .Include(s => s.Group) // بارگذاری اطلاعات گروه
+                .Include(s => s.Tenant) // بارگذاری اطلاعات Tenant
                 .FirstOrDefaultAsync(m => m.SubGroupId == id);
-            if (subGroup == null)
-            {
-                return NotFound();
-            }
 
-            return View(subGroup);
+            if (subGroup == null) return NotFound();
+
+            var dto = new SubGroupDto
+            {
+                SubGroupId = subGroup.SubGroupId,
+                SubGroupName = subGroup.SubGroupName,
+                GroupId = subGroup.GroupId,
+                TenantId = subGroup.TenantId,
+                GroupName = subGroup.Group.GroupName // اضافه کردن نام گروه
+            };
+
+            return View(dto); // اطمینان از اینکه dto به عنوان مدل ارسال می‌شود
         }
 
         // POST: SubGroup/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var subGroup = await _context.SubGroups.FindAsync(id);
-            _context.SubGroups.Remove(subGroup);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool SubGroupExists(int id)
-        {
-            return _context.SubGroups.Any(e => e.SubGroupId == id);
+            if (subGroup != null)
+            {
+                _context.SubGroups.Remove(subGroup);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index)); // هدایت به صفحه لیست زیرگروه‌ها
         }
     }
 }

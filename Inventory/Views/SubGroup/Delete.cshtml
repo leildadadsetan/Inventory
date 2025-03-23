@@ -1,15 +1,18 @@
-﻿@model Inventory.Models.SubGroup
+﻿@model Inventory.Dtos.SubGroupDto
 
 @{
     ViewData["Title"] = "حذف زیرگروه";
 }
 
-<div class="container mt-4">
-    <h2 class="text-danger">آیا مطمئن هستید که می‌خواهید این زیرگروه را حذف کنید؟</h2>
-    <h4>@Model.SubGroupName</h4>
+<h2>حذف زیرگروه</h2>
+
+<div>
+    <h4>زیرگروه: @Model.SubGroupName</h4>
+    <hr />
+    <p>آیا مطمئن هستید که می‌خواهید زیرگروه <strong>@Model.SubGroupName</strong> را حذف کنید؟</p>
     <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="SubGroupId" />
         <button type="submit" class="btn btn-danger">حذف</button>
-        <a href="@Url.Action("Index")" class="btn btn-secondary">انصراف</a>
+        <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
     </form>
 </div>
