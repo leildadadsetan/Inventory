@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Inventory.Models.Product>
+﻿@model IEnumerable<Inventory.Dtos.ProductDto>
 
 @{
     ViewData["Title"] = "لیست محصولات";
@@ -12,7 +12,9 @@
             <tr>
                 <th>شناسه</th>
                 <th>نام محصول</th>
+                <th>کد محصول</th>
                 <th>کد گروه</th>
+                <th>کد زیرگروه</th>
                 <th>عملیات</th>
             </tr>
         </thead>
@@ -22,7 +24,9 @@
                 <tr>
                     <td>@item.ProductId</td>
                     <td>@item.ProductName</td>
-                    <td>@item.SubGroupId</td>
+                    <td>@item.ProductCode</td>
+                    <td>@item.GroupCode</td>
+                    <td>@item.SubGroupCode</td>
                     <td>
                         <a href="@Url.Action("Edit", new { id = item.ProductId })" class="btn btn-warning btn-sm">ویرایش</a>
                         <a href="@Url.Action("Delete", new { id = item.ProductId })" class="btn btn-danger btn-sm">حذف</a>

@@ -18,6 +18,7 @@ namespace Inventory
         public DbSet<Product> Products { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<CompanyType> CompanyTypes { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyProduct> CompanyProducts { get; set; }
         public DbSet<ApplicationUserClaim> ApplicationUserClaims { get; set; }
