@@ -4,50 +4,86 @@
     ViewData["Title"] = "ویرایش محصول";
 }
 
-<h1>ویرایش محصول</h1>
+<div class="container mt-4 d-flex justify-content-center">
+    <div class="card shadow-sm" style="max-width: 600px; width: 100%;">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">ویرایش محصول</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit">
+                <input type="hidden" asp-for="ProductId" />
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="ProductId" />
+                <div class="mb-2">
+                    <label asp-for="ProductName" class="form-label">نام محصول</label>
+                    <input asp-for="ProductName" class="form-control" />
+                    <span asp-validation-for="ProductName" class="text-danger"></span>
+                </div>
 
-    <div class="form-group">
-        <label asp-for="ProductName" class="control-label"></label>
-        <input asp-for="ProductName" class="form-control" />
-        <span asp-validation-for="ProductName" class="text-danger"></span>
+                <div class="mb-2">
+                    <label asp-for="ProductCode" class="form-label">کد محصول</label>
+                    <input asp-for="ProductCode" class="form-control" />
+                    <span asp-validation-for="ProductCode" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">آزمایشگاه</label>
+                    <select asp-for="TenantId" class="form-control" asp-items="ViewBag.Tenants"></select>
+                    <span asp-validation-for="TenantId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">شرکت</label>
+                    <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.Companies"></select>
+                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">گروه</label>
+                    <select id="groupSelect" asp-for="GroupId" class="form-control" asp-items="ViewBag.Groups"></select>
+                    <span asp-validation-for="GroupId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">زیرگروه</label>
+                    <select id="subGroupSelect" asp-for="SubGroupId" class="form-control"></select>
+                    <span asp-validation-for="SubGroupId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">بازگشت</a>
+                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i> به روز رسانی</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="ProductCode" class="control-label"></label>
-        <input asp-for="ProductCode" class="form-control" />
-        <span asp-validation-for="ProductCode" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">اجاره‌نشین</label>
-        <select asp-for="TenantId" class="form-control" asp-items="ViewBag.Tenants"></select>
-        <span asp-validation-for="TenantId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">شرکت</label>
-        <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.Companies"></select>
-        <span asp-validation-for="CompanyId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label class="control-label">زیرگروه</label>
-        <select asp-for="SubGroupId" class="form-control" asp-items="ViewBag.SubGroups"></select>
-        <span asp-validation-for="SubGroupId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="ذخیره تغییرات" class="btn btn-primary" />
-    </div>
-</form>
-
-<a asp-action="Index" class="btn btn-secondary">بازگشت به لیست</a>
+</div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#groupSelect').change(function () {
+                var groupId = $(this).val();
+                $('#subGroupSelect').empty(); // Clear previous subgroups
+
+                if (groupId) {
+                    $.ajax({
+                        url: '@Url.Action("GetSubGroups", "Product")', 
+                        type: 'GET',
+                        data: { groupId: groupId },
+                        success: function (data) {
+                            $.each(data, function (index, item) {
+                                $('#subGroupSelect').append($('<option></option>').val(item.SubGroupId).html(item.SubGroupName));
+                            });
+                        }
+                    });
+                }
+            });
+
+            var selectedSubGroup = '@Model.SubGroupId'; 
+            if (selectedSubGroup) {
+                $('#subGroupSelect').val(selectedSubGroup);
+            }
+        });
+    </script>
 }

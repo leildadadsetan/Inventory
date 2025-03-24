@@ -5,41 +5,41 @@
 }
 
 <div class="container mt-4">
-    <h2>لیست انبارها</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">لیست انبارها</h2>
+        <a href="@Url.Action("Create")" class="btn btn-success"><i class="fas fa-plus"></i> ایجاد انبار جدید</a>
+    </div>
 
-    <a href="@Url.Action("Create")" class="btn btn-success mb-3">ایجاد انبار جدید</a>
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>نام انبار</th>
-                <th>مکان</th>
-                <th>نام Tenant</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var warehouse in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm bg-white">
+            <thead class="bg-light text-dark">
                 <tr>
-                    <td>@warehouse.Name</td>
-                    <td>@warehouse.Location</td>
-                    <td>
-                        @if (warehouse.Tenant != null)
-                        {
-                            @warehouse.Tenant.Name
-                        }
-                        else
-                        {
-                            <span>بدون Tenant</span>
-                        }
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Edit", new { id = warehouse.WarehouseId })" class="btn btn-warning btn-sm">ویرایش</a>
-                        <a href="@Url.Action("Delete", new { id = warehouse.WarehouseId })" class="btn btn-danger btn-sm" onclick="return confirm('آیا مطمئن هستید؟')">حذف</a>
-                    </td>
+                    <th>نام انبار</th>
+                    <th>مکان</th>
+                    <th>نام آزمایشگاه</th>
+                    <th class="text-center">عملیات</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var warehouse in Model)
+                {
+                    <tr>
+                        <td>@warehouse.Name</td>
+                        <td>@warehouse.Location</td>
+                        <td>@(warehouse.Tenant != null ? warehouse.Tenant.Name : "بدون آزمایشگاه")</td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <a href="@Url.Action("Edit", new { id = warehouse.WarehouseId })" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> ویرایش
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = warehouse.WarehouseId })" class="btn btn-danger btn-sm" onclick="return confirm('آیا از حذف این انبار مطمئن هستید؟');">
+                                    <i class="fas fa-trash-alt"></i> حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

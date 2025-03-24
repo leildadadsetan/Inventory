@@ -4,8 +4,8 @@
     {
         public int? CompanyId { get; set; }
         public string Name { get; set; }
-        public int CompanyTypeId { get; set; }  // اشاره به نوع کمپانی
-        public string CompanyTypeName { get; set; } // نام نوع کمپانی
+        public int CompanyTypeId { get; set; }  
+        public string CompanyTypeName { get; set; } 
         public string Address { get; set; }
         public string CompanyCode { get; set; }
         public string Country { get; set; }

@@ -7,20 +7,19 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <style>
         body {
-            direction: rtl; /* راست‌چین کردن کل صفحه */
+            direction: rtl;
         }
     </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/">نام سایت</a> <!-- اضافه کردن نام سایت -->
+            <a class="navbar-brand" href="/">نام سایت</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mr-auto">
-                    <!-- راست‌چین کردن منو -->
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Warehouse" asp-action="Index">انبارها</a>
                     </li>
@@ -37,17 +36,25 @@
                         <a class="nav-link" asp-controller="Group" asp-action="Index">گروه‌ها</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="SubGroup" asp-action="Index">زیر گروه ‌ها</a>
+                        <a class="nav-link" asp-controller="SubGroup" asp-action="Index">زیر گروه‌ها</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Invoice" asp-action="Index">فاکتور‌ها</a>
                     </li>
+
+                    @* لینک مدیریت نقش‌ها فقط برای ادمین *@
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Admin" asp-action="ManageUserRoles">مدیریت نقش‌ها</a>
+                        </li>
+                    }
                 </ul>
                 <ul class="navbar-nav">
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item">
-                            <form asp-controller="Login" asp-action="Logout" method="post">
+                            <form asp-controller="Login" asp-action="Logout" method="post" class="nav-item">
                                 <button type="submit" class="btn btn-link nav-link">خروج</button>
                             </form>
                         </li>
@@ -56,6 +63,9 @@
                     {
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Login" asp-action="Login">ورود</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
                         </li>
                     }
                 </ul>
@@ -73,7 +83,7 @@
         </div>
     </footer>
 
-    @RenderSection("Scripts", required: false)  
+    @RenderSection("Scripts", required: false)
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Inventory.Models.ApplicationUser>
+@using Microsoft.AspNetCore.Identity
+
+@{
+    ViewData["Title"] = "مدیریت نقش‌ها";
+    var userManager = (UserManager<Inventory.Models.ApplicationUser>)ViewData["UserManager"];
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ایمیل</th>
+            <th>نقش‌ها</th>
+            <th>تخصیص نقش</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @* نمایش نقش‌های کاربر *@
+                    @{
+                        var roles = await userManager.GetRolesAsync(user);
+                    }
+                    @foreach (var role in roles)
+                    {
+                        <span class="badge bg-secondary">@role</span>
+                        <form asp-action="RemoveRole" method="post" class="d-inline">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <input type="hidden" name="roleName" value="@role" />
+                            <button type="submit" class="btn btn-danger btn-sm ms-1">حذف</button>
+                        </form>
+                    }
+                </td>
+                <td>
+                    <form asp-action="AssignRole" method="post" class="d-inline">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <select name="roleName" class="form-select d-inline" required>
+                            <option value="">انتخاب نقش</option>
+                            @foreach (var role in ViewBag.RoleNames)
+                            {
+                                <option value="@role">@role</option>
+                            }
+                        </select>
+                        <button type="submit" class="btn btn-primary">تخصیص نقش</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-secondary">بازگشت به صفحه اصلی</a>

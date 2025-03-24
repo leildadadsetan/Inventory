@@ -5,31 +5,43 @@
 }
 
 <div class="container mt-4">
-    <h2>گروه‌ها</h2>
-    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">ایجاد گروه جدید</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">گروه‌ها</h2>
+        <a href="@Url.Action("Create")" class="btn btn-success"><i class="fas fa-plus"></i> ایجاد گروه جدید</a>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>نام گروه</th>
-                <th>کد گروه</th>
-                <th>نام Tenant</th>
-                <th>عملیات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var group in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm" style="background-color: #f8f9fa;">
+            <thead class="bg-light text-dark">
                 <tr>
-                    <td>@group.GroupName</td>
-                    <td>@group.GroupCode</td>
-                    <td>@group.Tenant.Name</td>
-                    <td>
-                        <a href="@Url.Action("Edit", new { id = group.GroupId })" class="btn btn-warning btn-sm">ویرایش</a>
-                        <a href="@Url.Action("Delete", new { id = group.GroupId })" class="btn btn-danger btn-sm">حذف</a>
-                    </td>
+                    <th>#</th>
+                    <th>نام گروه</th>
+                    <th>کد گروه</th>
+                    <th>نام آزمایشگاه</th>
+                    <th class="text-center">عملیات</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var group in Model)
+                {
+                    <tr>
+                        <td>@group.GroupId</td>
+                        <td>@group.GroupName</td>
+                        <td>@group.GroupCode</td>
+                        <td>@group.Tenant.Name</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a href="@Url.Action("Edit", new { id = group.GroupId })" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> ویرایش
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = group.GroupId })" class="btn btn-danger btn-sm" onclick="return confirm('آیا از حذف این گروه مطمئن هستید؟');">
+                                    <i class="fas fa-trash-alt"></i> حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

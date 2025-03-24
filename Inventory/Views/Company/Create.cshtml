@@ -4,60 +4,62 @@
     ViewData["Title"] = "ایجاد شرکت";
 }
 
-<h1>ایجاد شرکت</h1>
+<div class="container mt-4 d-flex justify-content-center">
+    <div class="card shadow-sm" style="max-width: 600px; width: 100%;">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">ایجاد شرکت</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="Name" class="form-label">نام شرکت</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-<form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="Name" class="control-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">نوع شرکت</label>
+                        <select asp-for="CompanyTypeId" class="form-control" asp-items="ViewBag.CompanyTypes"></select>
+                        <span asp-validation-for="CompanyTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="CompanyCode" class="form-label">کد شرکت</label>
+                        <input asp-for="CompanyCode" class="form-control" />
+                        <span asp-validation-for="CompanyCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="TaxCode" class="form-label">کد دارایی</label>
+                        <input asp-for="TaxCode" class="form-control" />
+                        <span asp-validation-for="TaxCode" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="Email" class="form-label">ایمیل</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-2">
+                        <label asp-for="PhoneNumber" class="form-label">شماره تماس</label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-12 mb-2">
+                        <label asp-for="Address" class="form-label">آدرس</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">بازگشت</a>
+                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i> ذخیره</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label class="control-label">Company Type</label> <!-- برچسب برای نمایش -->
-        <select asp-for="CompanyTypeId" class="form-control" asp-items="ViewBag.CompanyTypes"></select>
-        <span asp-validation-for="CompanyTypeId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Address" class="control-label"></label>
-        <input asp-for="Address" class="form-control" />
-        <span asp-validation-for="Address" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CompanyCode" class="control-label"></label>
-        <input asp-for="CompanyCode" class="form-control" />
-        <span asp-validation-for="CompanyCode" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Country" class="control-label"></label>
-        <input asp-for="Country" class="form-control" />
-        <span asp-validation-for="Country" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Email" class="control-label"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PhoneNumber" class="control-label"></label>
-        <input asp-for="PhoneNumber" class="form-control" />
-        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TaxCode" class="control-label"></label>
-        <input asp-for="TaxCode" class="form-control" />
-        <span asp-validation-for="TaxCode" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
-</form>
-
-<a asp-action="Index">بازگشت به لیست</a>
+</div>

@@ -4,28 +4,30 @@
     ViewData["Title"] = "ایجاد انبار";
 }
 
-<div class="container mt-4">
-    <h2>ایجاد انبار جدید</h2>
-    <form asp-action="Create" method="post">
-        <div class="mb-3">
-            <label class="form-label">نام انبار</label>
-            <input asp-for="Name" class="form-control" required />
-            <span asp-validation-for="Name" class="text-danger"></span>
+<div class="container mt-4 d-flex justify-content-center">
+    <div class="card shadow-sm" style="max-width: 600px; width: 100%;">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">ایجاد انبار</h5>
         </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div class="mb-2">
+                    <label class="form-label">نام انبار</label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
 
-        <div class="mb-3">
-            <label class="form-label">مکان انبار</label>
-            <input asp-for="Location" class="form-control" required />
-            <span asp-validation-for="Location" class="text-danger"></span>
+                <div class="mb-2">
+                    <label class="form-label">مکان انبار</label>
+                    <input asp-for="Location" class="form-control" required />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">بازگشت</a>
+                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i> ذخیره</button>
+                </div>
+            </form>
         </div>
-        <button type="submit" class="btn btn-primary">ثبت</button>
-        <a href="@Url.Action("Index")" class="btn btn-secondary">بازگشت</a>
-
-    </form>
+    </div>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}

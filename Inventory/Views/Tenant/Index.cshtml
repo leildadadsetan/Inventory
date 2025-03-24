@@ -4,33 +4,42 @@
     ViewData["Title"] = "آزمایشگاه ها";
 }
 
-<h2>Tenants</h2>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">آزمایشگاه‌ها</h2>
+        <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> ایجاد آزمایشگاه جدید</a>
+    </div>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">ایجاد آزمایشگاه جدید</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Tenant ID</th>
-            <th>Name</th>
-            <th>Warehouse</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var tenant in Model)
-        {
-            <tr>
-                <td>@tenant.TenantId</td>
-                <td>@tenant.Name</td>
-                <td>@tenant.Warehouse?.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@tenant.TenantId" class="btn btn-warning">ویرایش</a>
-                    <a asp-action="Delete" asp-route-id="@tenant.TenantId" class="btn btn-danger">حذف</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm" style="background-color: #f8f9fa;">
+            <thead class="bg-light text-dark">
+                <tr>
+                    <th>آیدی آزمایشگاه</th>
+                    <th>نام</th>
+                    <th>انبار</th>
+                    <th class="text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var tenant in Model)
+                {
+                    <tr>
+                        <td>@tenant.TenantId</td>
+                        <td>@tenant.Name</td>
+                        <td>@tenant.Warehouse?.Name</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@tenant.TenantId" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> ویرایش
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@tenant.TenantId" class="btn btn-danger btn-sm" onclick="return confirm('آیا از حذف این آزمایشگاه مطمئن هستید؟');">
+                                    <i class="fas fa-trash-alt"></i> حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

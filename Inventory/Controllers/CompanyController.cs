@@ -30,6 +30,7 @@ namespace Inventory.Controllers
                 CompanyId = c.CompanyId,
                 Name = c.Name,
                 CompanyTypeId = c.CompanyTypeId,
+                CompanyTypeName=c.CompanyType.Name,
                 Address = c.Address,
                 CompanyCode = c.CompanyCode,
                 Country = c.Country,

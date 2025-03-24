@@ -1,33 +1,43 @@
 ﻿@model Inventory.Models.Group
 
-<h1>ایجاد گروه</h1>
+@{
+    ViewData["Title"] = "ایجاد گروه";
+}
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="GroupName" class="control-label"></label>
-        <input asp-for="GroupName" class="form-control" required />
-        <span asp-validation-for="GroupName" class="text-danger"></span> <!-- نمایش خطا -->
+<div class="container mt-4 d-flex justify-content-center">
+    <div class="card shadow-sm" style="max-width: 600px; width: 100%;">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">ایجاد گروه</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div class="mb-2">
+                    <label asp-for="GroupName" class="form-label">نام گروه</label>
+                    <input asp-for="GroupName" class="form-control" required />
+                    <span asp-validation-for="GroupName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label asp-for="GroupCode" class="form-label">کد گروه</label>
+                    <input asp-for="GroupCode" class="form-control" required />
+                    <span asp-validation-for="GroupCode" class="text-danger"></span>
+                </div>
+
+                <div class="mb-2">
+                    <label asp-for="TenantId" class="form-label">آزمایشگاه</label>
+                    <select asp-for="TenantId" class="form-control" asp-items="@(new SelectList(ViewData["Tenants"] as IEnumerable<Inventory.Dtos.TenantDto>, "TenantId", "Name"))" required>
+                        <option value="">انتخاب کنید</option>
+                    </select>
+                    <span asp-validation-for="TenantId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">بازگشت</a>
+                    <button type="submit" class="btn btn-success btn-sm"><i class="fas fa-save"></i> ذخیره</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="GroupCode" class="control-label"></label>
-        <input asp-for="GroupCode" class="form-control" required />
-        <span asp-validation-for="GroupCode" class="text-danger"></span> <!-- نمایش خطا -->
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TenantId" class="control-label"></label>
-        <select asp-for="TenantId" class="form-control" asp-items="@(new SelectList(ViewData["Tenants"] as IEnumerable<Inventory.Dtos.TenantDto>, "TenantId", "Name"))" required>
-            <option value="">انتخاب کنید</option>
-        </select>
-        <span asp-validation-for="TenantId" class="text-danger"></span> <!-- نمایش خطا -->
-    </div>
-
-    <button type="submit" class="btn btn-primary">ایجاد</button>
-</form>
-
-<div>
-    <a asp-action="Index">بازگشت</a>
 </div>
 
 @section Scripts {

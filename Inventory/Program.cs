@@ -13,7 +13,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add Identity services with int keys
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+    // Configure password settings
+    options.Password.RequireDigit = true; // نیاز به حداقل یک عدد
+    options.Password.RequireLowercase = true; // نیاز به حداقل یک حرف کوچک
+    options.Password.RequireUppercase = true; // نیاز به حداقل یک حرف بزرگ
+    options.Password.RequireNonAlphanumeric = true; // نیاز به حداقل یک نماد غیر الفبایی
+    options.Password.RequiredLength = 8; // حداقل طول رمز عبور
+    options.Password.RequiredUniqueChars = 1; // حداقل تعداد کاراکترهای منحصر به فرد
+})
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 

@@ -4,32 +4,36 @@
     ViewData["Title"] = "لیست فاکتورها";
 }
 
-<h1>لیست فاکتورها</h1>
+<div class="container mt-4">
+    <h2 class="text-primary">لیست فاکتورها</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>شماره فاکتور</th>
-            <th>تأمین‌کننده</th>
-            <th>کاربر</th>
-            <th>تاریخ فاکتور</th>
-            <th>تاریخ دریافت</th>
-            <th>وضعیت</th>
-            <th>مجموع مبلغ</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var invoice in Model)
-        {
-            <tr>
-                <td>@invoice.InvoiceNumber</td>
-                <td>@invoice.SupplierId</td> <!-- اینجا می‌توانید نام تأمین‌کننده را نمایش دهید -->
-                <td>@invoice.UserId</td> <!-- اینجا می‌توانید نام کاربر را نمایش دهید -->
-                <td>@invoice.InvoiceDate.ToShortDateString()</td>
-                <td>@(invoice.ReceivedDate.HasValue ? invoice.ReceivedDate.Value.ToShortDateString() : "ندارد")</td>
-                <td>@invoice.Status</td>
-                <td>@invoice.TotalAmount.ToString("C")</td> <!-- نمایش مبلغ به صورت فرمت ارزی -->
-            </tr>
-        }
-    </tbody>
-</table>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm bg-white">
+            <thead class="bg-light text-dark">
+                <tr>
+                    <th>شماره فاکتور</th>
+                    <th>تأمین‌کننده</th>
+                    <th>کاربر</th>
+                    <th>تاریخ فاکتور</th>
+                    <th>تاریخ دریافت</th>
+                    <th>وضعیت</th>
+                    <th>مجموع مبلغ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var invoice in Model)
+                {
+                    <tr>
+                        <td>@invoice.InvoiceNumber</td>
+                        <td>@invoice.SupplierId</td>
+                        <td>@invoice.UserId</td>
+                        <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                        <td>@(invoice.ReceivedDate.HasValue ? invoice.ReceivedDate.Value.ToShortDateString() : "ندارد")</td>
+                        <td>@invoice.Status</td>
+                        <td>@invoice.TotalAmount.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

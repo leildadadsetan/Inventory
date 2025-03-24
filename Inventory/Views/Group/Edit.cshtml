@@ -22,7 +22,7 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">انتخاب Tenant</label>
+            <label class="form-label">انتخاب آزمایشگاه</label>
             <select asp-for="TenantId" class="form-control" asp-items="@(new SelectList(ViewData["Tenants"] as IEnumerable<Inventory.Dtos.TenantDto>, "TenantId", "Name"))" required>
                 <option value="">انتخاب کنید</option>
             </select>

@@ -1,30 +1,41 @@
-﻿@model IEnumerable<Inventory.Models.ApplicationRole> // جایگزین کنید با فضای نام واقعی شما
+﻿@model IEnumerable<Inventory.Models.ApplicationRole>
 
 @{
     ViewData["Title"] = "مدیریت نقش‌ها";
 }
 
-<h2>مدیریت نقش‌ها</h2>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary">مدیریت نقش‌ها</h2>
+        <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> ایجاد نقش جدید</a>
+    </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>نام نقش</th>
-            <th>عملیات</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var role in Model)
-        {
-            <tr>
-                <td>@role.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-warning">ویرایش</a>
-                    <a asp-action="Delete" asp-route-id="@role.Id" class="btn btn-danger">حذف</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<a asp-action="Create" class="btn btn-success">ایجاد نقش جدید</a>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover shadow-sm bg-white">
+            <thead class="bg-light text-dark">
+                <tr>
+                    <th>نام نقش</th>
+                    <th class="text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var role in Model)
+                {
+                    <tr>
+                        <td>@role.Name</td>
+                        <td class="text-center">
+                            <div class="btn-group">
+                                <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> ویرایش
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@role.Id" class="btn btn-danger btn-sm" onclick="return confirm('آیا از حذف این نقش مطمئن هستید؟');">
+                                    <i class="fas fa-trash-alt"></i> حذف
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

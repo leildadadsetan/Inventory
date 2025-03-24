@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Inventory.Controllers
 {
@@ -72,8 +73,10 @@ namespace Inventory.Controllers
                 // بررسی وجود کد گروه تکراری
                 if (await IsGroupCodeDuplicate(groupDto.GroupCode))
                 {
-                    ModelState.AddModelError("GroupCode", "این کد گروه قبلاً ثبت شده است.");
-                }
+                    string errorMessage = "این کد گروه قبلاً ثبت شده است.";
+                    ModelState.AddModelError(string.Empty, errorMessage);
+                    throw new InvalidOperationException(errorMessage);
+                 }
       
                 if (ModelState.IsValid) // دوباره بررسی اعتبارسنجی
                 {

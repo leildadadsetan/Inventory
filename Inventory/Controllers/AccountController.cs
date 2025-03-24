@@ -25,13 +25,21 @@ namespace Inventory.Controllers
         {
             if (ModelState.IsValid)
             {
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "این ایمیل قبلاً ثبت‌نام شده است. لطفاً از ایمیل دیگری استفاده کنید.");
+                    return View(model);
+
+                }
+
                 var user = new ApplicationUser
                 {
                     UserName = model.Email,
                     Email = model.Email,
-                    FirstName = model.FirstName, // اضافه کردن نام
-                    LastName = model.LastName,   // اضافه کردن نام خانوادگی
-                    PhoneNumber = model.PhoneNumber // اضافه کردن شماره تماس
+                    FirstName = model.FirstName, 
+                    LastName = model.LastName,   
+                    PhoneNumber = model.PhoneNumber 
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -42,7 +50,9 @@ namespace Inventory.Controllers
 
                 foreach (var error in result.Errors)
                 {
+                    string errorMessage = "رمز عبور باید حداقل 8 کاراکتر باشد و شامل حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک نماد غیر الفبایی باشد.";
                     ModelState.AddModelError(string.Empty, error.Description);
+                    throw new InvalidOperationException(errorMessage);
                 }
             }
             return View(model);

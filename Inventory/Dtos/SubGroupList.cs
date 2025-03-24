@@ -6,4 +6,11 @@
         public string SubGroupName { get; set; }
  
     }
+
+    public class GroupList
+    {
+        public int GroupId { get; set; }
+        public string GroupName { get; set; }
+
+    }
 }
