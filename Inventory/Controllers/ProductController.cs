@@ -95,7 +95,8 @@ namespace Inventory.Controllers
                         ProductCode = dto.ProductCode,
                         TenantId = dto.TenantId,
                         CompanyId = dto.CompanyId,
-                        SubGroupId = dto.SubGroupId
+                        SubGroupId = dto.SubGroupId,
+                        GroupId=groupId
                     };
 
                     _context.Products.Add(product);
